@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<!--
+  AquaGaurd: Indore Smart Water Grid & NRW Optimization
+  Bal Vigyan 2026 Mathematics Project
+  
+  MIT License - Copyright (c) 2026 Yatharth Telang & Team
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files, to deal in the Software
+  without restriction, including without limitation the rights to use, copy, 
+  modify, merge, publish, and distribute copies of the Software.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title></title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  html{scroll-padding-top:env(safe-area-inset-top,0px)}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:#07111f;color:#dbeafe;min-height:100vh}
+  header{background:#0b1a2e;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1a3a5c;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:10}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:#0b1a2e}
+  .logo{display:flex;align-items:center;gap:10px}
+  .logo .drop{width:30px;height:30px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 0 14px #38bdf855}
+  .logo h1{font-size:19px;letter-spacing:.5px}
+  .logo small{display:block;font-size:10px;color:#64748b;font-weight:400;letter-spacing:1.5px}
+  nav{display:flex;gap:6px;flex-wrap:wrap}
+  nav button{background:#122740;border:1px solid #1e3a5c;color:#93c5fd;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;transition:.2s}
+  nav button:hover{background:#1a3355}
+  nav button.active{background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;border-color:#38bdf8;box-shadow:0 0 12px #0ea5e955}
+  main{padding:22px;max-width:1240px;margin:0 auto}
+  .view{display:none;animation:fade .3s}
+  .view.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  h2{font-size:16px;margin-bottom:14px;color:#7dd3fc;letter-spacing:.4px;text-transform:uppercase}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:20px}
+  .card{background:#0d1f35;border:1px solid #1a3a5c;border-radius:12px;padding:16px;position:relative;overflow:hidden}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#38bdf8,#0284c7)}
+  .card.red::before{background:linear-gradient(90deg,#f87171,#dc2626)}
+  .card.amber::before{background:linear-gradient(90deg,#fbbf24,#d97706)}
+  .card.green::before{background:linear-gradient(90deg,#4ade80,#16a34a)}
+  .card .label{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.8px}
+  .card .value{font-size:26px;font-weight:700;margin-top:6px;color:#e0f2fe}
+  .card .sub{font-size:11px;color:#7dd3fc;margin-top:4px}
+  table{width:100%;border-collapse:collapse;background:#0d1f35;border-radius:12px;overflow:hidden;font-size:13px;margin-bottom:18px;display:block;overflow-x:auto;white-space:nowrap}
+  th{background:#122740;padding:11px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:#7dd3fc;border-bottom:1px solid #1a3a5c}
+  td{padding:10px 12px;border-bottom:1px solid #132a45}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#0f2540}
+  .bar{height:8px;background:#132a45;border-radius:6px;overflow:hidden;min-width:70px}
+  .bar>div{height:100%;border-radius:6px}
+  .pill{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.4px}
+  .pill.red{background:#450a0a;color:#fca5a5;border:1px solid #7f1d1d}
+  .pill.amber{background:#422006;color:#fcd34d;border:1px solid #854d0e}
+  .pill.green{background:#052e16;color:#86efac;border:1px solid #166534}
+  .pill.blue{background:#082f49;color:#7dd3fc;border:1px solid #075985}
+  .btn{background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;border:none;padding:10px 18px;border-radius:9px;cursor:pointer;font-weight:700;font-size:13px;transition:.2s;box-shadow:0 0 14px #0ea5e944}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 0 20px #0ea5e966}
+  .btn.danger{background:linear-gradient(135deg,#ef4444,#b91c1c);box-shadow:0 0 14px #ef444444}
+  .btn.ghost{background:#122740;border:1px solid #1e3a5c;box-shadow:none}
+  .alert{background:#1a0a0a;border:1px solid #7f1d1d;border-left:4px solid #ef4444;padding:14px 16px;border-radius:10px;margin-bottom:12px;animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 #ef444400}50%{box-shadow:0 0 0 6px #ef444422}}
+  .alert h4{color:#fca5a5;font-size:13px;margin-bottom:4px}
+  .alert p{font-size:12px;color:#cbd5e1;line-height:1.5}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}}
+  .panel{background:#0d1f35;border:1px solid #1a3a5c;border-radius:12px;padding:18px}
+  .panel h3{font-size:13px;color:#7dd3fc;text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px}
+  .gauge{height:14px;background:#132a45;border-radius:8px;overflow:hidden;margin:8px 0 4px}
+  .gauge>div{height:100%;background:linear-gradient(90deg,#38bdf8,#0284c7);border-radius:8px;transition:width .6s}
+  .gauge.crit>div{background:linear-gradient(90deg,#fbbf24,#dc2626)}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+  .field input,.field select{width:100%;background:#07111f;border:1px solid #1e3a5c;color:#e0f2fe;padding:9px 11px;border-radius:8px;font-size:14px;outline:none}
+  .field input:focus,.field select:focus{border-color:#38bdf8}
+  .result{background:#07111f;border:1px dashed #1e3a5c;border-radius:10px;padding:14px;margin-top:10px;font-size:13px;line-height:1.7}
+  .result b{color:#7dd3fc}
+  .workorder{background:#0d1f35;border:1px solid #1a3a5c;border-left:4px solid #64748b;border-radius:10px;padding:14px 16px;margin-bottom:12px}
+  .workorder.red{border-left-color:#ef4444}
+  .workorder.amber{border-left-color:#fbbf24}
+  .workorder.green{border-left-color:#4ade80}
+  .workorder .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px}
+  .workorder .top b{font-size:14px}
+  .workorder .factors{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;font-size:11px}
+  .workorder .factors div{background:#07111f;padding:6px 8px;border-radius:6px}
+  .workorder .factors span{display:block;color:#64748b;font-size:9px;text-transform:uppercase;letter-spacing:.5px}
+  .workorder .factors b{color:#7dd3fc;font-size:13px}
+  .timeline{font-size:12px;color:#94a3b8;line-height:1.9;margin-top:10px;padding-left:14px;border-left:2px solid #1e3a5c}
+  .timeline .done{color:#4ade80}
+  .timeline .active{color:#fbbf24}
+  .timeline .pending{color:#475569}
+  .note{font-size:11px;color:#64748b;margin-top:10px;line-height:1.6;font-style:italic}
+  .tag{display:inline-block;background:#082f49;color:#7dd3fc;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;margin-right:4px}
+  .chat{background:#07111f;border-radius:10px;padding:12px;font-size:12px;line-height:1.8;margin-top:10px}
+  .chat .msg{margin-bottom:8px;padding-left:12px;border-left:2px solid #1e3a5c}
+  .chat .msg b{color:#7dd3fc}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="drop"></div>
+    <div>
+      <h1>AquaGuard</h1>
+      <small>INDORE MUNICIPAL WATER MANAGEMENT</small>
+    </div>
+  </div>
+  <nav>
+    <button data-role="admin" class="active">🏛 Municipal Admin</button>
+    <button data-role="engineer">⚙ Engineer</button>
+    <button data-role="field">🔧 Field Team</button>
+    <button data-role="citizen">👨‍👩‍👧 Citizen</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ============ ADMIN ============ -->
+<section id="admin-view" class="view active">
+  <h2>Municipal Administration — Central Dashboard</h2>
+
+  <div class="cards">
+    <div class="card"><div class="label">Total Demand</div><div class="value">620 <small style="font-size:13px;color:#64748b">MLD</small></div><div class="sub">Domestic + commercial</div></div>
+    <div class="card amber"><div class="label">Sourced</div><div class="value">440 <small style="font-size:13px;color:#64748b">MLD</small></div><div class="sub">Narmada + Yashwant Sagar</div></div>
+    <div class="card red"><div class="label">Effective Delivery</div><div class="value">310 <small style="font-size:13px;color:#64748b">MLD</small></div><div class="sub">After NRW losses</div></div>
+    <div class="card red"><div class="label">Average NRW</div><div class="value">65%</div><div class="sub">CAG audit range: 65–70%</div></div>
+  </div>
+
+  <h2>Zone-Level NRW &amp; Population</h2>
+  <table>
+    <thead><tr><th>Zone (DMA)</th><th>Supplied (MLD)</th><th>NRW %</th><th>Loss</th><th>Population</th><th>Contamination Risk</th></tr></thead>
+    <tbody id="zoneTable"></tbody>
+  </table>
+
+  <h2>Repair Priority Queue</h2>
+  <div id="adminQueue"></div>
+  <p class="note">Sorted by Priority = 0.40·C + 0.25·L + 0.20·P + 0.15·D. Red ≥ 75 = immediate. Amber 50–74 = 48 hrs. Green &lt; 50 = scheduled.</p>
+</section>
+
+<!-- ============ ENGINEER ============ -->
+<section id="engineer-view" class="view">
+  <h2>Engineer — Pipeline &amp; Water Quality Monitor</h2>
+
+  <div class="grid2">
+    <div class="panel">
+      <h3>Live Pipeline Pressure (Zone 4 — Bhagirathpura)</h3>
+      <div class="gauge" id="pressureGauge"><div style="width:72%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:#64748b"><span>0 bar</span><span id="pressureVal" style="color:#7dd3fc;font-weight:700">2.9 bar (normal)</span><span>4 bar</span></div>
+      <p class="note">Below 0.5 bar = negative-pressure risk → sewage intrusion possible.</p>
+
+      <h3 style="margin-top:20px">Water Quality Snapshot</h3>
+      <table style="margin-bottom:0">
+        <tbody>
+          <tr><td>Total Coliform</td><td><span class="pill green">PASS</span></td></tr>
+          <tr><td>E. coli</td><td><span class="pill green">PASS</span></td></tr>
+          <tr><td>Turbidity</td><td><span class="pill amber">0.8 NTU</span></td></tr>
+          <tr><td>Residual Chlorine</td><td><span class="pill green">0.4 mg/L</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <h3>Leak Detection — Sensor Feed</h3>
+      <p style="font-size:12px;color:#94a3b8;line-height:1.7;margin-bottom:14px">
+        Sensors on Zone 4 detected abnormal pressure drop at <b>14:32</b>. The system has identified the affected section as <b>PIPE-4B</b> (300 mm CI main, 220 m stretch, near sewage trunk S-7).
+      </p>
+      <button class="btn danger" onclick="simulateLeak()">⚡ Simulate Leak Detection</button>
+      <div id="leakResult" style="margin-top:16px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FIELD ============ -->
+<section id="field-view" class="view">
+  <h2>Field / Repair Team — Work Orders</h2>
+  <div id="fieldOrders"></div>
+  <p class="note">Each work order carries the priority score, the four contributing factors, and the isolation/testing protocol when contamination is suspected.</p>
+</section>
+
+<!-- ============ CITIZEN ============ -->
+<section id="citizen-view" class="view">
+  <h2>Citizen Portal — Allocation, Schedule &amp; Complaints</h2>
+
+  <div class="grid2">
+    <div class="panel">
+      <h3>Water Allocation Calculator</h3>
+      <div class="field"><label>Registered family size</label><input type="number" id="famSize" value="5" min="1" max="20"></div>
+      <div class="field"><label>Zone</label>
+        <select id="zoneSel">
+          <option value="Vijay Nagar">Vijay Nagar</option>
+          <option value="Bhagirathpura" selected>Bhagirathpura</option>
+          <option value="Palasia">Palasia</option>
+          <option value="Rajwada">Rajwada</option>
+        </select>
+      </div>
+      <button class="btn" onclick="calcAllocation()">Calculate My Allocation</button>
+      <div class="result" id="allocResult">Enter family size and click Calculate.</div>
+      <p class="note">Formula: a<sub>i</sub> = L·n<sub>i</sub> + (S − S<sub>floor</sub>)·(n<sub>i</sub>/N). Floor L = 50 LPCD, target T = 150 LPCD.</p>
+    </div>
+
+    <div class="panel">
+      <h3>Report a Leak</h3>
+      <div class="field"><label>Location</label><input id="reportLoc" placeholder="e.g. Near Bhagirathpura school, Lane 4"></div>
+      <div class="field"><label>Description</label><input id="reportDesc" placeholder="e.g. Water bubbling from road, sewage smell"></div>
+      <button class="btn" onclick="submitReport()">Submit Complaint</button>
+      <div id="reportResult" style="margin-top:12px;font-size:12px"></div>
+
+      <h3 style="margin-top:20px">Supply Schedule</h3>
+      <div class="chat">
+        <div class="msg"><b>Bhagirathpura:</b> 6:00–8:00 AM (morning), 5:00–7:00 PM (evening)</div>
+        <div class="msg"><b>Vijay Nagar:</b> 5:30–7:30 AM, 4:30–6:30 PM</div>
+        <div class="msg"><b>Palasia:</b> 6:00–8:00 AM, 5:00–7:00 PM</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 style="margin-top:24px">Complaint Status</h2>
+  <table>
+    <thead><tr><th>ID</th><th>Location</th><th>Status</th><th>Priority</th><th>Assigned</th></tr></thead>
+    <tbody id="citizenComplaints">
+      <tr><td colspan="5" style="color:#64748b;text-align:center;padding:20px">No complaints yet. Submit one above.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</main>
+
+<script>
+/* ====== STATE ====== */
+const zones = [
+  {name:'Vijay Nagar',   supplied:45, nrw:28, pop:85000, contam:30},
+  {name:'Bhagirathpura', supplied:18, nrw:71, pop:15000, contam:95},
+  {name:'Palasia',       supplied:38, nrw:42, pop:62000, contam:55},
+  {name:'Rajwada',       supplied:22, nrw:58, pop:41000, contam:70},
+  {name:'Sudama Nagar',  supplied:30, nrw:35, pop:55000, contam:40},
+  {name:'Annapurna',     supplied:25, nrw:48, pop:38000, contam:60},
+  {name:'Khajrana',      supplied:20, nrw:62, pop:47000, contam:65},
+  {name:'LIG Square',    supplied:28, nrw:39, pop:44000, contam:45},
+];
+
+const state = {
+  role: 'admin',
+  alerts: [],
+  workOrders: [],
+  complaints: []
+};
+
+/* ====== RENDER: ZONE TABLE ====== */
+function renderZones(){
+  const tbody = document.getElementById('zoneTable');
+  tbody.innerHTML = zones.map(z => {
+    const loss = (z.supplied * z.nrw / 100).toFixed(1);
+    const barColor = z.nrw > 60 ? '#ef4444' : z.nrw > 40 ? '#fbbf24' : '#4ade80';
+    const riskPill = z.contam > 70 ? 'red' : z.contam > 45 ? 'amber' : 'green';
+    return `<tr>
+      <td><b>${z.name}</b></td>
+      <td>${z.supplied} MLD</td>
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="bar"><div style="width:${z.nrw}%;background:${barColor}"></div></div><span>${z.nrw}%</span></div></td>
+      <td>${loss} MLD</td>
+      <td>${z.pop.toLocaleString()}</td>
+      <td><span class="pill ${riskPill}">${z.contam}/100</span></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ====== PRIORITY FORMULA ====== */
+function priorityScore(c, l, p, d){
+  return +(0.40*c + 0.25*l + 0.20*p + 0.15*d).toFixed(1);
+}
+function priorityClass(s){ return s >= 75 ? 'red' : s >= 50 ? 'amber' : 'green'; }
+function priorityLabel(s){ return s >= 75 ? 'RED — IMMEDIATE' : s >= 50 ? 'AMBER — 48 HRS' : 'GREEN — SCHEDULED'; }
+
+/* ====== SIMULATE LEAK (Engineer) ====== */
+function simulateLeak(){
+  const pressure = document.getElementById('pressureGauge');
+  pressure.classList.add('crit');
+  pressure.firstElementChild.style.width = '22%';
+  document.getElementById('pressureVal').textContent = '0.9 bar ⚠ PRESSURE DROP';
+  document.getElementById('pressureVal').style.color = '#f87171';
+
+  // Compute priority
+  const C = 95;   // sewage trunk S-7 adjacent, negative pressure
+  const L = 82;   // 300mm main, high flow loss
+  const P = 68;   // 15,000 people in DMA
+  const D = 12;   // first detection today
+  const score = priorityScore(C, L, P, D);
+
+  const alertId = 'ALR-' + String(state.alerts.length + 1).padStart(3, '0');
+  const woId = 'WO-' + String(state.workOrders.length + 1).padStart(3, '0');
+
+  const alert = {
+    id: alertId, zone: 'Bhagirathpura', pipe: 'PIPE-4B',
+    score, C, L, P, D,
+    time: new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'}),
+    status: 'Detected'
+  };
+  state.alerts.push(alert);
+
+  const wo = { ...alert, woId, status: 'Assigned' };
+  state.workOrders.push(wo);
+
+  // Engineer result panel
+  document.getElementById('leakResult').innerHTML = `
+    <div class="alert">
+      <h4>⚠ LEAK DETECTED — ${alert.pipe} — Zone 4 Bhagirathpura</h4>
+      <p><b>Pressure:</b> 2.9 bar → 0.9 bar at 14:32. <b>Flow anomaly:</b> +18% inlet-outlet differential.<br>
+      <b>Adjacent hazard:</b> Sewage trunk S-7 runs 1.2 m above PIPE-4B. Negative-pressure window 3–5 AM.<br>
+      <b>Priority Score:</b> <span class="pill ${priorityClass(score)}">${score} — ${priorityLabel(score)}</span></p>
+    </div>
+    <div class="workorder ${priorityClass(score)}">
+      <div class="top"><b>${woId}</b><span class="pill ${priorityClass(score)}">${priorityLabel(score)}</span></div>
+      <div class="factors">
+        <div><span>Contam. Risk (40%)</span><b>${C}</b></div>
+        <div><span>Leak Severity (25%)</span><b>${L}</b></div>
+        <div><span>Population (20%)</span><b>${P}</b></div>
+        <div><span>Duration (15%)</span><b>${D}</b></div>
+      </div>
+      <div class="timeline">
+        <div class="done">✓ Sensor alert → Municipal dashboard</div>
+        <div class="done">✓ Priority score calculated: ${score}</div>
+        <div class="active">→ Work order ${woId} sent to Field Team</div>
+        <div class="pending">○ Isolation of section (contamination suspected)</div>
+        <div class="pending">○ Water-quality testing</div>
+        <div class="pending">○ Repair + safety check + restoration</div>
+      </div>
+    </div>`;
+
+  renderAdminQueue();
+  renderFieldOrders();
+}
+
+/* ====== ADMIN QUEUE ====== */
+function renderAdminQueue(){
+  const el = document.getElementById('adminQueue');
+  if(state.alerts.length === 0){
+    el.innerHTML = '<p class="note" style="padding:14px;background:#0d1f35;border-radius:10px">No active alerts. Go to <b>Engineer</b> and click "Simulate Leak Detection" to run the workflow.</p>';
+    return;
+  }
+  const sorted = [...state.alerts].sort((a,b) => b.score - a.score);
+  el.innerHTML = sorted.map(a => `
+    <div class="workorder ${priorityClass(a.score)}">
+      <div class="top">
+        <b>${a.id} — ${a.zone} — ${a.pipe}</b>
+        <span class="pill ${priorityClass(a.score)}">${a.score} — ${priorityLabel(a.score)}</span>
+      </div>
+      <div style="font-size:12px;color:#94a3b8">Detected ${a.time} · Status: ${a.status}</div>
+    </div>`).join('');
+}
+
+/* ====== FIELD ORDERS ====== */
+function renderFieldOrders(){
+  const el = document.getElementById('fieldOrders');
+  if(state.workOrders.length === 0){
+    el.innerHTML = '<p class="note" style="padding:14px;background:#0d1f35;border-radius:10px">No work orders yet. Simulate a leak from the Engineer view to dispatch one.</p>';
+    return;
+  }
+  const sorted = [...state.workOrders].sort((a,b) => b.score - a.score);
+  el.innerHTML = sorted.map(w => `
+    <div class="workorder ${priorityClass(w.score)}">
+      <div class="top">
+        <b>${w.woId} — ${w.pipe} — ${w.zone}</b>
+        <span class="pill ${priorityClass(w.score)}">${w.score} — ${priorityLabel(w.score)}</span>
+      </div>
+      <div class="factors">
+        <div><span>Contam. Risk</span><b>${w.C}</b></div>
+        <div><span>Leak Severity</span><b>${w.L}</b></div>
+        <div><span>Population</span><b>${w.P}</b></div>
+        <div><span>Duration</span><b>${w.D}</b></div>
+      </div>
+      <div class="timeline">
+        <div class="done">✓ Work order received from Municipal Dashboard</div>
+        <div class="active">→ Isolate PIPE-4B section (valve V-12, V-15)</div>
+        <div class="pending">○ Collect water sample for coliform/E. coli test</div>
+        <div class="pending">○ Repair joint / replace 220 m stretch</div>
+        <div class="pending">○ Pressure test + chlorination flush</div>
+        <div class="pending">○ Restore supply + notify citizens</div>
+      </div>
+      <button class="btn ghost" style="margin-top:12px;font-size:12px;padding:7px 14px" onclick="advanceOrder('${w.woId}')">Advance Workflow →</button>
+    </div>`).join('');
+}
+
+function advanceOrder(id){
+  const w = state.workOrders.find(x => x.woId === id);
+  if(!w) return;
+  const steps = ['Assigned','Isolated','Testing','Repairing','Restored'];
+  const idx = steps.indexOf(w.status);
+  if(idx < steps.length - 1){
+    w.status = steps[idx + 1];
+    // notify citizen complaint feed
+    state.complaints.unshift({
+      id: 'CMP-' + String(state.complaints.length + 1).padStart(3, '0'),
+      location: w.pipe + ' — ' + w.zone,
+      status: w.status,
+      priority: w.score,
+      assigned: w.woId
+    });
+  }
+  renderFieldOrders();
+  renderCitizenComplaints();
+}
+
+/* ====== CITIZEN: ALLOCATION ====== */
+function calcAllocation(){
+  const n = +document.getElementById('famSize').value;
+  const zoneName = document.getElementById('zoneSel').value;
+  const zone = zones.find(z => z.name === zoneName);
+
+  // Simulated zone-level supply and population
+  const S = zone.supplied * 1000000;       // MLD → litres
+  const N = zone.pop;
+  const L = 50, T = 150;
+  const Sfloor = L * N;
+
+  let alloc, mode;
+  if(S <= Sfloor){
+    alloc = L * n; mode = 'CRITICAL — survival floor only';
+  } else if(S < T * N){
+    alloc = L * n + (S - Sfloor) * (n / N);
+    mode = 'PROPORTIONAL — floor guaranteed, surplus shared by family size';
+  } else {
+    alloc = T * n; mode = 'FULL ENTITLEMENT';
+  }
+
+  const perCapita = (alloc / n).toFixed(0);
+  const deficit = Math.max(0, T * n - alloc).toFixed(0);
+
+  document.getElementById('allocResult').innerHTML = `
+    <b>Zone:</b> ${zoneName} (supply ${zone.supplied} MLD, population ${N.toLocaleString()}, NRW ${zone.nrw}%)<br>
+    <b>Family size:</b> ${n} members<br>
+    <b>Allocation:</b> <span style="color:#7dd3fc;font-weight:700;font-size:16px">${Math.round(alloc).toLocaleString()} litres/day</span><br>
+    <b>Per capita:</b> ${perCapita} LPCD (target ${T}, floor ${L})<br>
+    <b>Mode:</b> ${mode}<br>
+    ${deficit > 0 ? `<b style="color:#fca5a5">Shortfall vs target:</b> ${(+deficit).toLocaleString()} litres/day — this household is flagged for tanker priority.` : '<b style="color:#86efac">Full target entitlement met.</b>'}
+  `;
+}
+
+/* ====== CITIZEN: REPORT ====== */
+function submitReport(){
+  const loc = document.getElementById('reportLoc').value || 'Unspecified location';
+  const desc = document.getElementById('reportDesc').value || 'No description';
+  const id = 'CMP-' + String(state.complaints.length + 1).padStart(3, '0');
+  state.complaints.unshift({ id, location: loc, status: 'Received', priority: '—', assigned: 'Pending triage' });
+  document.getElementById('reportResult').innerHTML = `<span class="pill green">✓ ${id} submitted</span> <span style="color:#94a3b8">We will notify you when a field team is assigned.</span>`;
+  document.getElementById('reportLoc').value = '';
+  document.getElementById('reportDesc').value = '';
+  renderCitizenComplaints();
+}
+
+function renderCitizenComplaints(){
+  const tbody = document.getElementById('citizenComplaints');
+  if(state.complaints.length === 0){
+    tbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;text-align:center;padding:20px">No complaints yet. Submit one above.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = state.complaints.map(c => {
+    const pill = c.priority === '—' ? 'blue' : priorityClass(+c.priority);
+    const label = c.priority === '—' ? 'Triage' : c.priority;
+    return `<tr>
+      <td><b>${c.id}</b></td>
+      <td>${c.location}</td>
+      <td><span class="pill ${pill}">${c.status}</span></td>
+      <td>${label}</td>
+      <td>${c.assigned}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ====== ROLE SWITCH ====== */
+document.querySelectorAll('nav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(btn.dataset.role + '-view').classList.add('active');
+    state.role = btn.dataset.role;
+  });
+});
+
+/* ====== INIT ====== */
+renderZones();
+renderAdminQueue();
+renderFieldOrders();
+renderCitizenComplaints();
+</script>
+</body>
+</html>
